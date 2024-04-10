@@ -3,3 +3,8 @@
 
 # Dependency directories
 node_modules/
+
+# ssl
+sslcert/
+
+config/default.json
