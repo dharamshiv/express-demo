@@ -1,76 +1,69 @@
 const { Container } = require("typedi");
-const Joi = require("Joi");
+const ValidationError = require("../util/validationError");
+const { VALIDATION_ERROR } = require("../constants/errorCodes");
+const { validateGenre } = require("../validation/genreValidator");
+const {
+  validateId,
+  validateIdUsingMongoose,
+} = require("../validation/otherValidatior");
 
 const getGenres = async (_, res) => {
-  try {
-    const genres = await Container.get("genreService").getGenres();
-    res.send(genres);
-  } catch (e) {
-    Container.get("logger").error(e);
-  }
+  const genres = await Container.get("genreService").getGenres();
+  res.send(genres);
 };
 
 const getGenre = async (req, res) => {
-  try {
-    const genreId = parseInt(req.params.id);
-    const genre = await Container.get("genreService").getGenre(genreId);
-    res.send(genre);
-  } catch (e) {
-    Container.get("logger").error(e);
+  const genreId = req.params.id;
+  const { error } = validateId(genreId);
+  if (error) {
+    throw new ValidationError(VALIDATION_ERROR, 400, error.details[0].message);
   }
+  const genre = await Container.get("genreService").getGenre(genreId);
+  res.send(genre);
 };
 
-const addGenre = async (req, res) => {
+const postGenre = async (req, res) => {
   const { error } = validateGenre(req.body);
   if (error) {
-    return res.status(400).send(error.details[0].message);
+    throw new ValidationError(VALIDATION_ERROR, 400, error.details[0].message);
   }
-  try {
-    const genre = await Container.get("genreService").addGenre(req.body.name);
-    res.send(genre);
-  } catch (e) {
-    Container.get("logger").error(e);
-  }
+  const genre = await Container.get("genreService").addGenre(req.body.name);
+  res.send(genre);
 };
 
-updateGenre = async (req, res) => {
+const putGenre = async (req, res) => {
   // Validation
   const { error } = validateGenre(req.body);
   if (error) {
-    return res.status(400).send(error.details[0].message);
+    throw new ValidationError(VALIDATION_ERROR, 400, error.details[0].message);
   }
-  
-  try {
-    const genreId = parseInt(req.params.id);
-    const genre = await Container.get("genreService").updateGenre(genreId, req.body.name);
-    res.send(genre);
-  } catch (e) {
-    Container.get("logger").error(e);
+
+  const genreId = req.params.id;
+  const { error: error2 } = validateId(genreId);
+  if (error2) {
+    throw new ValidationError(VALIDATION_ERROR, 400, error2.details[0].message);
   }
+  const genre = await Container.get("genreService").updateGenre(
+    genreId,
+    req.body.name
+  );
+  res.send(genre);
 };
 
 deleteGenre = async (req, res) => {
-  try {
-    const genreId = parseInt(req.params.id);
-    const genre = await Container.get("genreService").deleteGenre(genreId);
-    res.send(genre);
-  } catch (e) {
-    Container.get("logger").error(e);
+  const genreId = req.params.id;
+  const isValid = validateIdUsingMongoose(genreId);
+  if (!isValid) {
+    throw new ValidationError(VALIDATION_ERROR, 400, "invalid id");
   }
+  const genre = await Container.get("genreService").deleteGenre(genreId);
+  res.send(genre);
 };
-
-function validateGenre(genre) {
-  const schema = Joi.object({
-    name: Joi.string().min(3).required(),
-  });
-
-  return schema.validate(genre);
-}
 
 module.exports = {
   getGenres,
   getGenre,
-  addGenre,
-  updateGenre,
+  postGenre,
+  putGenre,
   deleteGenre,
 };

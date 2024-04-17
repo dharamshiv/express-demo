@@ -2,8 +2,9 @@ const express = require("express");
 const cors = require("cors");
 const config = require("../config");
 const routes = require("../routes");
+const error = require("../middlewares/errorHandler");
 
-module.exports = ({app}) => {
+module.exports = (app) => {
   /**
    * Helth Checkup
    */
@@ -30,18 +31,21 @@ module.exports = ({app}) => {
   // Load API routes
   app.use(config.api.prefix, routes());
 
+  //error handling
+  app.use(error);
+
   /// catch 404 and forward to error handler
-  app.use((req, res, next) => {
+/*   app.use((req, res, next) => {
     const err = new Error('Not Found');
     err['status'] = 404;
     next(err);
-  });
+  }); */
 
   /// error handlers
-  app.use((err, req, res, next) => {
-    /**
+   /**
      * Handle 401 thrown by express-jwt library
      */
+  /* app.use((err, req, res, next) => {
     if (err.name === 'UnauthorizedError') {
       return res
         .status(err.status)
@@ -49,16 +53,16 @@ module.exports = ({app}) => {
         .end();
     }
     return next(err);
-  });
+  }); */
 
 
-  app.use((err, req, res, next) => {
+  /* app.use((err, req, res, next) => {
     res.status(err.status || 500);
     res.json({
       errors: {
         message: err.message,
       },
     });
-  });
+  }); */
 
 };

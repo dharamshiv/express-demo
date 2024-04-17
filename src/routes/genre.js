@@ -10,8 +10,8 @@ module.exports = (app) => {
 
   // get all genres
   router.get("/", controller.getGenres);
-  router.post("/", controller.addGenre);
+  router.post("/", controller.postGenre);
   router.get("/:id", controller.getGenre);
-  router.put("/:id", controller.updateGenre);
+  router.put("/:id", controller.putGenre);
   router.delete('/:id', controller.deleteGenre);
 };

@@ -1,46 +1,63 @@
-const genres = [
-  { id: 1, name: "Action" },
-  { id: 2, name: "Horror" },
-  { id: 3, name: "Romance" },
-];
+const { Container } = require("typedi");
+const AppError = require("../util/appError");
+const { INVALID_GENRE } = require("../constants/errorCodes");
 
 getGenres = async () => {
-  return genres;
+  const GenreModel = Container.get("genreModel");
+  return await GenreModel.find();
 };
 
 getGenre = async (id) => {
-  const genre = genres.find((c) => c.id === id);
+  const GenreModel = Container.get("genreModel");
+  const genre = await GenreModel.findById(id);
   if (!genre) {
-    throw new Error("The Genre with givem id was not found");
+    throw new AppError(
+      INVALID_GENRE,
+      "The Genre with givem id was not found",
+      404
+    );
   }
   return genre;
 };
 
 addGenre = async (name) => {
-  const genre = {
-    id: genres.length + 1,
-    name: name,
-  };
-  genres.push(genre);
+  const GenreModel = Container.get("genreModel");
+  let genre = new GenreModel({ name });
+  genre = await genre.save({ name });
   return genre;
 };
 
 updateGenre = async (id, name) => {
-  const genre = genres.find((c) => c.id === id);
+  const GenreModel = Container.get("genreModel");
+  const genre = await GenreModel.findByIdAndUpdate(
+    id,
+    { name: name },
+    { new: true }
+  );
   if (!genre) {
-    throw new Error("The Genre with givem id was not found");
+    if (!genre) {
+      throw new AppError(
+        INVALID_GENRE,
+        "The Genre with givem id was not found",
+        404
+      );
+    }
   }
-  genre.name = name;
   return genre;
 };
 
 deleteGenre = async (id) => {
-  const genre = genres.find((c) => c.id === id);
+  const GenreModel = Container.get("genreModel");
+  const genre = await GenreModel.findByIdAndDelete(id);
   if (!genre) {
-    throw new Error("The Genre with givem id was not found");
+    if (!genre) {
+      throw new AppError(
+        INVALID_GENRE,
+        "The Genre with givem id was not found",
+        404
+      );
+    }
   }
-  const index = genres.findIndex((c) => c.id === id);
-  genres.splice(index, 1);
   return genre;
 };
 
@@ -49,5 +66,5 @@ module.exports = {
   getGenre,
   addGenre,
   updateGenre,
-  deleteGenre
-}
+  deleteGenre,
+};

@@ -9,11 +9,11 @@ const controllersInjection = require('./controllersInjection');
 module.exports = ({mongoConnection}) => {
   try {
     
+    Container.set('logger', logger);
+    
     modelInjection();
     serviceInjection();
     controllersInjection();
-
-    Container.set('logger', logger);
 
     const agendaInstance = agendaFactory({ mongoConnection });
     Container.set('agendaInstance', agendaInstance);
