@@ -2,3 +2,4 @@ exports.INVALID_GENRE = 100;
 exports.INVALID_CUSTOMER = 101;
 exports.INVALID_MOVIE = 102;
 exports.INVALID_RENTAL = 103;
+exports.USER_EXIST = 104;

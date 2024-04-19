@@ -5,7 +5,7 @@ const { AppError } = require("../util/error");
 // this is particular to express
 module.exports = (error, req, res, next) => {
   logger.error(error.message, error);
-  if (error.name === "UnauthorizedError") {
+  if (error.statusCode === 401 || error.name == "UnauthorizedError") {
     return res.status(error.statusCode).send({ message: error.message }).end();
   }
 

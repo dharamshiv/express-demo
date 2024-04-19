@@ -1,11 +1,10 @@
 const Joi = require("joi");
 
-const schema = Joi.object({
-  customerId: Joi.string().required(),
-  movieId: Joi.string().required(),
-});
-
 const validateRental = (item) => {
+  const schema = Joi.object({
+    customerId: Joi.string().required(),
+    movieId: Joi.string().required(),
+  });
   return schema.validate(item);
 };
 

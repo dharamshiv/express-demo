@@ -5,7 +5,6 @@ const {
   INVALID_MOVIE,
 } = require("../constants/errorCodes");
 const { AppError } = require("../util/error");
-const rentalModel = require("../models/rental");
 
 const getRentals = async () => {
   const rentalModel = Container.get("rentalModel");
@@ -65,7 +64,6 @@ const addRental = async (item) => {
 };
 
 const deleteRental = async (id) => {
-  console.log(id);
   const rentalModel = Container.get("rentalModel");
   let rental = await rentalModel.findById(id);
   if (!rental) throw new AppError(INVALID_RENTAL, 404, "Invalid rental.");

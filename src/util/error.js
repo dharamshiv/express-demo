@@ -6,6 +6,14 @@ class AppError extends Error {
   }
 }
 
+class UnauthorizedError extends Error {
+  constructor(statusCode, message) {
+    super(message);
+    this.statusCode = statusCode;
+  }
+}
+
 module.exports = {
   AppError,
+  UnauthorizedError,
 };
