@@ -7,6 +7,7 @@ module.exports = (app) => {
 
   const controller = Container.get('customerController');
   
+  // customer routes
   router.get('/', controller.getCustomers);
   router.post('/', controller.postCustomer);
   router.get('/:id', controller.getCustomer);

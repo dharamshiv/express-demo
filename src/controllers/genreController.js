@@ -1,11 +1,6 @@
 const { Container } = require("typedi");
-const ValidationError = require("../util/validationError");
-const { VALIDATION_ERROR } = require("../constants/errorCodes");
 const { validateGenre } = require("../validation/genreValidator");
-const {
-  validateId,
-  validateIdUsingMongoose,
-} = require("../validation/otherValidatior");
+const { validateId } = require("../validation/otherValidator");
 
 const getGenres = async (_, res) => {
   const genres = await Container.get("genreService").getGenres();
@@ -14,19 +9,18 @@ const getGenres = async (_, res) => {
 
 const getGenre = async (req, res) => {
   const genreId = req.params.id;
+  // validate cunstomer id
   const { error } = validateId(genreId);
-  if (error) {
-    throw new ValidationError(VALIDATION_ERROR, 400, error.details[0].message);
-  }
+  if (error) throw error;
+
   const genre = await Container.get("genreService").getGenre(genreId);
   res.send(genre);
 };
 
 const postGenre = async (req, res) => {
   const { error } = validateGenre(req.body);
-  if (error) {
-    throw new ValidationError(VALIDATION_ERROR, 400, error.details[0].message);
-  }
+  if (error) throw error;
+
   const genre = await Container.get("genreService").addGenre(req.body.name);
   res.send(genre);
 };
@@ -34,15 +28,12 @@ const postGenre = async (req, res) => {
 const putGenre = async (req, res) => {
   // Validation
   const { error } = validateGenre(req.body);
-  if (error) {
-    throw new ValidationError(VALIDATION_ERROR, 400, error.details[0].message);
-  }
+  if (error) throw error;
 
   const genreId = req.params.id;
   const { error: error2 } = validateId(genreId);
-  if (error2) {
-    throw new ValidationError(VALIDATION_ERROR, 400, error2.details[0].message);
-  }
+  if (error2) throw error2;
+
   const genre = await Container.get("genreService").updateGenre(
     genreId,
     req.body.name
@@ -51,12 +42,11 @@ const putGenre = async (req, res) => {
 };
 
 deleteGenre = async (req, res) => {
-  const genreId = req.params.id;
-  const isValid = validateIdUsingMongoose(genreId);
-  if (!isValid) {
-    throw new ValidationError(VALIDATION_ERROR, 400, "invalid id");
-  }
-  const genre = await Container.get("genreService").deleteGenre(genreId);
+  const id = req.params.id;
+  const { error } = validateId(id);
+
+  if (error) throw error;
+  const genre = await Container.get("genreService").deleteGenre(id);
   res.send(genre);
 };
 

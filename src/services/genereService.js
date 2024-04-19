@@ -1,62 +1,58 @@
 const { Container } = require("typedi");
-const AppError = require("../util/appError");
+const { AppError } = require("../util/error");
 const { INVALID_GENRE } = require("../constants/errorCodes");
 
 getGenres = async () => {
-  const GenreModel = Container.get("genreModel");
-  return await GenreModel.find();
+  const genreModel = Container.get("genreModel");
+  return await genreModel.find();
 };
 
 getGenre = async (id) => {
-  const GenreModel = Container.get("genreModel");
-  const genre = await GenreModel.findById(id);
+  const genreModel = Container.get("genreModel");
+  const genre = await genreModel.findById(id);
   if (!genre) {
     throw new AppError(
       INVALID_GENRE,
-      "The Genre with givem id was not found",
-      404
+      404,
+      "The Genre with givem id was not found"
     );
   }
   return genre;
 };
 
 addGenre = async (name) => {
-  const GenreModel = Container.get("genreModel");
-  let genre = new GenreModel({ name });
+  const genreModel = Container.get("genreModel");
+  let genre = new genreModel({ name });
   genre = await genre.save({ name });
   return genre;
 };
 
 updateGenre = async (id, name) => {
-  const GenreModel = Container.get("genreModel");
-  const genre = await GenreModel.findByIdAndUpdate(
+  const genreModel = Container.get("genreModel");
+  const genre = await genreModel.findByIdAndUpdate(
     id,
     { name: name },
     { new: true }
   );
   if (!genre) {
-    if (!genre) {
-      throw new AppError(
-        INVALID_GENRE,
-        "The Genre with givem id was not found",
-        404
-      );
-    }
+    throw new AppError(
+      INVALID_GENRE,
+      404,
+      "The Genre with givem id was not found"
+    );
   }
   return genre;
 };
 
 deleteGenre = async (id) => {
-  const GenreModel = Container.get("genreModel");
-  const genre = await GenreModel.findByIdAndDelete(id);
+  const genreModel = Container.get("genreModel");
+  const genre = await genreModel.findByIdAndDelete(id);
   if (!genre) {
-    if (!genre) {
-      throw new AppError(
-        INVALID_GENRE,
-        "The Genre with givem id was not found",
-        404
-      );
-    }
+    throw new AppError(
+      INVALID_GENRE,
+      404,
+      "The Genre with givem id was not found"
+    );
   }
   return genre;
 };
