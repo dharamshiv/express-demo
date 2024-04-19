@@ -10,16 +10,6 @@ const https = require("https");
 const express = require("express");
 require("./util/extendJoi");
 
-// added objectId validation
-// const Joi = require("joi");
-// Joi.objectId = require("joi-objectid")(Joi);
-
-// test
-const Joi = require("joi");
-// console.log(Joi.password);
-const schema = Joi.password.string().minOfUppercase(1);
-const { error } = schema.validate("1234M");
-console.log(error);
 const startup = require("./startup");
 
 async function startServer() {

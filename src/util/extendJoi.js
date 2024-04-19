@@ -5,12 +5,12 @@ const Joi = require("joi");
 
 /**
  * add password validator in joi
- * ex - Joi.password.string().minOfUppercase(1);
- * notice password is not a function
+ * ex - Joi.password().string().minOfUppercase(1);
+ * notice password is a function
  */
 
 const { joiPasswordExtendCore } = require("joi-password");
-Joi.password = Joi.extend(joiPasswordExtendCore);
+Joi.password = () => Joi.extend(joiPasswordExtendCore);
 // example
 
 /**
