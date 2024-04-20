@@ -9,22 +9,15 @@ module.exports = (error, req, res, next) => {
     return res.status(error.statusCode).send({ message: error.message }).end();
   }
 
-  console.log(error.name);
   if (error.name === "ValidationError") {
     return res.status(400).send({
       type: "ValidationError",
       details: error?.details ?? error.message,
     });
-
-    /* return res.status(400).send({
-      type: "ValidationError",
-      message: error.details[0].message,
-    }); */
   }
 
   if (error instanceof AppError) {
     return res.status(error.statusCode).json({
-      errorCode: error.errorCode,
       message: error.message,
     });
   }

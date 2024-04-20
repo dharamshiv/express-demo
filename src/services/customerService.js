@@ -1,6 +1,5 @@
 const { Container } = require("typedi");
 const { AppError } = require("../util/error");
-const { INVALID_CUSTOMER } = require("../constants/errorCodes");
 
 getCustomers = async () => {
   const customerModel = Container.get("customerModel");
@@ -11,11 +10,7 @@ getCustomer = async (id) => {
   const customerModel = Container.get("customerModel");
   const customer = await customerModel.findById(id);
   if (!customer) {
-    throw new AppError(
-      INVALID_CUSTOMER,
-      404,
-      "The customer with givem id was not found"
-    );
+    throw new AppError(404, "The customer with givem id was not found");
   }
   return customer;
 };
@@ -44,11 +39,7 @@ updateCustomer = async (id, item) => {
     { new: true }
   );
   if (!customer) {
-    throw new AppError(
-      INVALID_CUSTOMER,
-      404,
-      "The customer with givem id was not found"
-    );
+    throw new AppError(404, "The customer with givem id was not found");
   }
   return customer;
 };
@@ -57,11 +48,7 @@ deleteCustomer = async (id) => {
   const customerModel = Container.get("customerModel");
   const customer = await customerModel.findByIdAndDelete(id);
   if (!customer) {
-    throw new AppError(
-      INVALID_CUSTOMER,
-      404,
-      "The customer with givem id was not found"
-    );
+    throw new AppError(404, "The customer with givem id was not found");
   }
   return customer;
 };

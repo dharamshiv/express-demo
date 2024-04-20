@@ -10,6 +10,11 @@ const https = require("https");
 const express = require("express");
 require("./util/extendJoi");
 
+if (!process.env.PRIVATE_KEY) {
+  console.log("JWT Private key not defined");
+  process.exit(1);
+}
+
 const startup = require("./startup");
 
 async function startServer() {

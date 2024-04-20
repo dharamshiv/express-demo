@@ -1,9 +1,4 @@
 const { Container } = require("typedi");
-const {
-  INVALID_RENTAL,
-  INVALID_CUSTOMER,
-  INVALID_MOVIE,
-} = require("../constants/errorCodes");
 const { AppError } = require("../util/error");
 
 const getRentals = async () => {
@@ -16,11 +11,7 @@ const getRental = async (id) => {
   const rentalModel = Container.get("rentalModel");
   const rental = await rentalModel.findById(id);
   if (!rental) {
-    throw new AppError(
-      INVALID_RENTAL,
-      404,
-      "The rental with the given ID not found."
-    );
+    throw new AppError(404, "The rental with the given ID not found.");
   }
   return rental;
 };
@@ -29,17 +20,17 @@ const addRental = async (item) => {
   const customerModel = Container.get("customerModel");
   const customer = await customerModel.findById(item.customerId);
   if (!customer) {
-    throw new AppError(INVALID_CUSTOMER, 404, "Invalid customer");
+    throw new AppError(404, "Invalid customer");
   }
   const movieModel = Container.get("movieModel");
   const movie = await movieModel.findById(item.movieId);
   console.log(movie);
   if (!movie) {
-    throw new AppError(INVALID_MOVIE, 404, "Invalid movie.");
+    throw new AppError(404, "Invalid movie.");
   }
 
   if (movie.numberInStock === 0) {
-    throw new AppError(INVALID_MOVIE, 404, "Movie not in stock");
+    throw new AppError(404, "Movie not in stock");
   }
 
   const rentalModel = Container.get("rentalModel");
@@ -66,11 +57,11 @@ const addRental = async (item) => {
 const deleteRental = async (id) => {
   const rentalModel = Container.get("rentalModel");
   let rental = await rentalModel.findById(id);
-  if (!rental) throw new AppError(INVALID_RENTAL, 404, "Invalid rental.");
+  if (!rental) throw new AppError(404, "Invalid rental.");
 
   const movieModel = Container.get("movieModel");
   const movie = await movieModel.findById(rental.movie._id);
-  if (!movie) throw new AppError(INVALID_MOVIE, 404, "Invalid movie.");
+  if (!movie) throw new AppError(404, "Invalid movie.");
 
   rental = await rentalModel.findByIdAndDelete(id);
 

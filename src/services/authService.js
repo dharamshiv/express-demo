@@ -1,3 +1,4 @@
+const jwt = require("jsonwebtoken");
 const { default: Container } = require("typedi");
 const { compare } = require("bcrypt");
 const { UnauthorizedError } = require("../util/error");
@@ -16,7 +17,8 @@ const validateUser = async (item) => {
   if (!isValid) {
     throw new UnauthorizedError(401, "Invalid email or password");
   }
-  return true;
+
+  return user.generateAuthToken();
 };
 
 module.exports = {

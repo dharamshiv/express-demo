@@ -1,6 +1,5 @@
 const { Container } = require("typedi");
 const { AppError } = require("../util/error");
-const { INVALID_GENRE } = require("../constants/errorCodes");
 
 getGenres = async () => {
   const genreModel = Container.get("genreModel");
@@ -11,11 +10,7 @@ getGenre = async (id) => {
   const genreModel = Container.get("genreModel");
   const genre = await genreModel.findById(id);
   if (!genre) {
-    throw new AppError(
-      INVALID_GENRE,
-      404,
-      "The Genre with givem id was not found"
-    );
+    throw new AppError(404, "The Genre with givem id was not found");
   }
   return genre;
 };
@@ -35,11 +30,7 @@ updateGenre = async (id, name) => {
     { new: true }
   );
   if (!genre) {
-    throw new AppError(
-      INVALID_GENRE,
-      404,
-      "The Genre with givem id was not found"
-    );
+    throw new AppError(404, "The Genre with givem id was not found");
   }
   return genre;
 };
@@ -48,11 +39,7 @@ deleteGenre = async (id) => {
   const genreModel = Container.get("genreModel");
   const genre = await genreModel.findByIdAndDelete(id);
   if (!genre) {
-    throw new AppError(
-      INVALID_GENRE,
-      404,
-      "The Genre with givem id was not found"
-    );
+    throw new AppError(404, "The Genre with givem id was not found");
   }
   return genre;
 };
